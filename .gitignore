@@ -1,1 +1,13 @@
+# Ignore environment files
 .env
+.env.local
+.env.*
+!.env.example
+
+# Ignore node and vendor dependencies
+node_modules/
+vendor/
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
