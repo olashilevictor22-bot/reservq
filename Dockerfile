@@ -1,15 +1,14 @@
-# Use official PHP image with Apache
+# Use official PHP with Apache
 FROM php:8.2-apache
 
-# Install system dependencies
+# Install required system dependencies
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
     libpq-dev \
     libonig-dev \
     libzip-dev \
-    zip \
-    && docker-php-ext-install pdo pdo_mysql pdo_pgsql mbstring zip exif pcntl bcmath
+    && docker-php-ext-install pdo pdo_mysql pdo_pgsql mbstring zip
 
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
@@ -26,11 +25,10 @@ COPY . .
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Set permissions
+# Set permissions for Laravel
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Expose port
+# Expose Apache port
 EXPOSE 80
 
 # Start Apache
