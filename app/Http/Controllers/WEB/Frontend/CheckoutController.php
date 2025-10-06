@@ -135,96 +135,78 @@ class CheckoutController extends Controller
         }
     }
 
-    public function applyCoupon(Request $request){
+    public function applyCoupon(Request $request)
+    {
+        $coupon = Coupon::where(['code' => $request->coupon, 'status' => 'active'])->first();
 
-        $data['coupon'] = Coupon::where(['code' => $request->coupon, 'status' => 'active'])->first();
-
-        if(!$data['coupon']){
-            $notification = trans('translate.Your provided coupon is invalid');
-            $notification = array('message'=>$notification,'alert-type'=>'error');
-            return redirect()->back()->with($notification);
-        }
-
-        if($data['coupon']->expired_date < date('Y-m-d')){
-            $notification = trans('translate.Your provided coupon has expired');
-            $notification = array('message'=>$notification,'alert-type'=>'error');
-            return redirect()->back()->with($notification);
-        }
-
-        if($data['coupon']->apply_qty >=  $data['coupon']->max_quantity ){
-            $notification = trans('translate.Your provided coupon limit is exceeded');
-            $notification = array('message'=>$notification,'alert-type'=>'error');
-            return redirect()->back()->with($notification);
-        }
-
-        $check = ApplyCoupon::where(['user_id' => auth::user()->id])->first();
-        if($check){
-            $cart = ApplyCoupon::find($check->id);
-            $cart->copun_id = $data['coupon']->id;
-            $cart->save();
-
-            $cartData = Cart::where(['user_id' => auth::user()->id])->first();
-            if($cartData){
-                if($data['coupon']->offer_type == '%')
-                {
-                    $discountAmount = $cartData->total * ($data['coupon']->discount / 100) ;
-                    $discountTotal = $cartData->total - $discountAmount;
-                    $grandTotal = $cartData->grand_total - $discountAmount;
-
-                    $cartUpdate = Cart::find($cartData->id);
-                    $cartUpdate->discount_amount = $discountAmount;
-                    $cartUpdate->grand_total = $grandTotal;
-                    $cartUpdate->save();
-                }else{
-                    $discountTotal = $cartData->total - $data['coupon']->discount;
-                    $discountAmount = $data['coupon']->discount;
-                    $grandTotal = $cartData->grand_total - $discountAmount;
-
-                    $cartUpdate = Cart::find($cartData->id);
-                    $cartUpdate->discount_amount = $discountAmount;
-                    $cartUpdate->grand_total = $grandTotal;
-                    $cartUpdate->save();
-                }
-
+        if (!$coupon) {
+            $message = trans('translate.Your provided coupon is invalid');
+            if ($request->ajax()) {
+                return response()->json(['status' => 'error', 'message' => $message]);
             }
-
-        }else{
-            $cart = new ApplyCoupon();
-            $cart->user_id = auth::user()->id;
-            $cart->copun_id = $data['coupon']->id;
-            $cart->save();
-
-            $cartData = Cart::where(['user_id' => auth::user()->id])->first();
-            if($cartData){
-                if($data['coupon']->offer_type == '%')
-                {
-                    $discountAmount = $cartData->total * ($data['coupon']->discount / 100) ;
-                    $discountTotal = $cartData->total - $discountAmount;
-                    $grandTotal = $cartData->grand_total - $discountAmount;
-
-                    $cartUpdate = Cart::find($cartData->id);
-                    $cartUpdate->discount_amount = $discountAmount;
-                    $cartUpdate->grand_total = $grandTotal;
-                    $cartUpdate->save();
-                }else{
-                    $discountTotal = $cartData->total - $data['coupon']->discount;
-                    $discountAmount = $data['coupon']->discount;
-                    $grandTotal = $cartData->grand_total - $discountAmount;
-
-                    $cartUpdate = Cart::find($cartData->id);
-                    $cartUpdate->discount_amount = $discountAmount;
-                    $cartUpdate->grand_total = $grandTotal;
-                    $cartUpdate->save();
-                }
-
-            }
+            return redirect()->back()->with(['message' => $message, 'alert-type' => 'error']);
         }
 
-        $notification = trans('translate.Coupon applied successful');
-        $notification = array('message'=>$notification,'alert-type'=>'success');
-        return redirect()->back()->with($notification);
+        if ($coupon->expired_date < date('Y-m-d')) {
+            $message = trans('translate.Your provided coupon has expired');
+            if ($request->ajax()) {
+                return response()->json(['status' => 'error', 'message' => $message]);
+            }
+            return redirect()->back()->with(['message' => $message, 'alert-type' => 'error']);
+        }
 
+        if ($coupon->apply_qty >= $coupon->max_quantity) {
+            $message = trans('translate.Your provided coupon limit is exceeded');
+            if ($request->ajax()) {
+                return response()->json(['status' => 'error', 'message' => $message]);
+            }
+            return redirect()->back()->with(['message' => $message, 'alert-type' => 'error']);
+        }
+
+        // ==== SAVE/UPDATE COUPON TO USER CART (same as your code) ====
+        $check = ApplyCoupon::where(['user_id' => auth()->user()->id])->first();
+        if ($check) {
+            $check->copun_id = $coupon->id;
+            $check->save();
+        } else {
+            ApplyCoupon::create([
+                'user_id' => auth()->user()->id,
+                'copun_id' => $coupon->id,
+            ]);
+        }
+
+        // Apply discount logic (you can keep your original)
+        $cart = Cart::where(['user_id' => auth()->user()->id])->first();
+        $discountAmount = 0;
+        $grandTotal = $cart?->grand_total;
+
+        if ($cart) {
+            if ($coupon->offer_type == '%') {
+                $discountAmount = $cart->total * ($coupon->discount / 100);
+            } else {
+                $discountAmount = $coupon->discount;
+            }
+            $grandTotal = $cart->grand_total - $discountAmount;
+
+            $cart->update([
+                'discount_amount' => $discountAmount,
+                'grand_total' => $grandTotal,
+            ]);
+        }
+
+        $message = trans('translate.Coupon applied successful');
+        if ($request->ajax()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => $message,
+                'discount_amount' => $discountAmount,
+                'grand_total' => $grandTotal,
+            ]);
+        }
+
+        return redirect()->back()->with(['message' => $message, 'alert-type' => 'success']);
     }
+
 
 
 

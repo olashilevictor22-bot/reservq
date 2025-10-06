@@ -62,6 +62,15 @@ use App\Http\Controllers\WEB\Frontend\PaymentController;
 
 use App\Models\setting as Setting;
 
+Route::get('/clear-cache', function () {
+    Artisan::call('cache:clear');
+    Artisan::call('config:clear');
+    Artisan::call('route:clear');
+    Artisan::call('view:clear');
+
+    return "Caches cleared";
+});
+
 Route::group(['middleware' => ['XSS']], function () {
 
     Route::group(['middleware' => ['HtmlSpecialchars']], function () {
@@ -87,7 +96,7 @@ Route::group(['middleware' => ['XSS']], function () {
         Route::get('/terms-of-service', [HomeController::class,'tremsOfServices'])->name('trems.of.service');
         Route::get('/privacy-policy', [HomeController::class,'privacyPolicy'])->name('privacy.policy');
 
-        Route::get('/cart-view', [CartController::class,'view'])->name('wishlist.index');
+        Route::get('/cart-view', [CartController::class,'view'])->name('cart.view');
         Route::get('/add-to-cart/{product}', [CartController::class,'addToCart'])->name('cart.add');
         Route::post('/cart/add', [CartController::class,'addProduct'])->name('cart.add.detils');
         Route::get('/cart', [CartController::class,'index'])->name('cart.index');
@@ -110,14 +119,14 @@ Route::group(['middleware' => ['XSS']], function () {
 
         // User Login Routes.....
         Route::group(['middleware'=>'guest'],function () {
-            Route::get('/login', [UserLoginController::class,'index'])->name('login');
+            Route::get('/login', [UserLoginController::class,'index'])->name('login.index');
             Route::post('/login', [UserLoginController::class,'login'])->name('login');
             Route::get('/verify/user/email', [UserLoginController::class,'verify_user_email'])->name('verify.user.email');
-            Route::get('/register', [UserLoginController::class,'registerView'])->name('register');
+            Route::get('/register', [UserLoginController::class,'registerView'])->name('register.index');
             Route::post('/register', [UserLoginController::class,'register'])->name('register');
-            Route::get('/forgot/password', [UserLoginController::class,'Forgot'])->name('forgot.password.user');
+            Route::get('/forgot/password', [UserLoginController::class,'Forgot'])->name('forgot.password.index');
             Route::post('/forgot/password', [UserLoginController::class,'ForgotPassword'])->name('forgot.password.user');
-            Route::get('/reset/password', [UserLoginController::class,'ResetPassword'])->name('reset.password.user');
+            Route::get('/reset/password', [UserLoginController::class,'ResetPassword'])->name('reset.password.index');
             Route::post('/set/password', [UserLoginController::class,'SetPassword'])->name('reset.password.user');
         });
 
@@ -146,7 +155,7 @@ Route::group(['middleware' => ['XSS']], function () {
         Route::get('/get-states', [UserDashboardController::class, 'getStates']);
         Route::get('/get-cities', [UserDashboardController::class, 'getCities']);
 
-        Route::get('/admin', [AdminLoginController::class,'index'])->name('admin.login.index');
+        // Route::get('/admin', [AdminLoginController::class,'index'])->name('admin.login.index');
         Route::get('/admin/login', [AdminLoginController::class,'index'])->name('admin.login.index');
         Route::post('/admin/login', [AdminLoginController::class,'Login'])->name('admin.login');
         Route::get('/login-out', [AdminLoginController::class,'Logout'])->name('admin.logout');

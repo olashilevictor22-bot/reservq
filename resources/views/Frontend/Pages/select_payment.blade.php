@@ -54,7 +54,6 @@
                             @if($paypal_payment->status == 1)
                             <div class="col-lg-6">
                                 <div class="shopping-payment-btn">
-                                    <form ></form>
                                     <a href="{{route('paypal')}}">
                                         <span>
                                             <img src="{{ asset($paypal_payment->paypal_image) }}" alt="img">
@@ -77,7 +76,7 @@
                             </div>
                             @endif
 
-                            @if($razorpay->status == 1)
+                            {{-- @if($razorpay->status == 1)
                                 <div class="col-lg-6">
                                     <div class="shopping-payment-btn">
                                         <a href="javascript:;" id="razorpayBtn">
@@ -121,7 +120,7 @@
                                         </script>
                                     </form>
                                 </div>
-                            @endif
+                            @endif --}}
 
 
                             @if ($paystack->paystack_status == 1)
@@ -202,7 +201,7 @@
                                 </div>
                             @endif
 
-                            @if ($stripe->status )
+                            {{-- @if ($stripe->status )
                                 <div class="col-lg-6 shopping-payment-btn-mt15px">
                                     <div class="shopping-payment-btn">
 
@@ -225,7 +224,7 @@
                                     </div>
 
                                 </div>
-                            @endif
+                            @endif --}}
 
                             @if ($bankPayment->status == 1)
                                 <div class="col-lg-6 shopping-payment-btn-mt15px">
@@ -412,22 +411,35 @@
                                 @endforeach
                             </div>
 
-
                             <div class="apply-coupon">
                                 <div class="apply-coupon-taitel">
                                     <h4>{{ __('translate.Apply Coupon') }}</h4>
                                 </div>
-                                <form action="{{ route('apply.coupon') }}" method="POST">
+                                <!-- <form action="{{ route('apply.coupon') }}" method="POST">
                                     @csrf
                                     <div class="apply-coupon-btn">
                                         <div class="apply-coupon-form">
-                                            <input type="text" class="form-control" name="coupon" value="{{ old('name') }}" id="exampleFormControlInput8" placeholder="{{ __('translate.Type coupon') }}">
+                                            <input type="text" class="form-control" name="coupon" value="{{ old('coupon') }}" id="exampleFormControlInput8" placeholder="{{ __('translate.Type coupon') }}">
                                         </div>
                                         <div class="apply-coupon-btn-two">
                                             <button type="submit" class="coupon-btn">{{ __('translate.Apply') }}</button>
                                         </div>
                                     </div>
-                                </form>
+                                </form> -->
+
+                                <div class="apply-coupon-btn">
+                                    <div class="apply-coupon-form">
+                                        <input type="text" class="form-control" name="coupon" id="couponField" placeholder="{{ __('translate.Type coupon') }}">
+                                    </div>
+                                    <div class="apply-coupon-btn-two">
+                                        <button type="button" id="applyCouponBtn" class="coupon-btn">{{ __('translate.Apply') }}</button>
+                                        <span id="applyCouponLoader" class="d-none">
+                                            <i class="fa fa-spinner fa-spin"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div id="couponMessage"></div>
+
                                 <div class="apply-coupon-box">
                                     <div class="shopping-cart-list">
                                         <div class="shopping-cart-list-text">
@@ -458,6 +470,7 @@
                             </div>
                         </div>
                     </div>
+                    
                 </div>
             </form>
         </div>
@@ -611,9 +624,9 @@
 
 
 {{-- start stripe payment --}}
-    <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+    <!-- <script type="text/javascript" src="https://js.stripe.com/v2/"></script> -->
 
-    <script>
+    <!-- <script>
         "use strict"
         $(function() {
             var $form = $(".require-validation");
@@ -721,7 +734,7 @@
 
 
         });
-    </script>
+    </script> -->
     {{-- end stripe payment --}}
 
     {{-- start flutterwave payment --}}
@@ -837,5 +850,48 @@
     </script>
 
 {{-- end paystack --}}
+
+
+<script>
+"use strict";
+$(document).ready(function () {
+    $("#applyCouponBtn").on("click", function (e) {
+        e.preventDefault();
+
+        let coupon = $("#couponField").val();
+        let _token = "{{ csrf_token() }}";
+
+        // Hide button and show loader
+        $("#applyCouponBtn").hide();
+        $("#applyCouponLoader").removeClass("d-none");
+
+        $.ajax({
+            url: "{{ route('apply.coupon') }}",
+            method: "POST",
+            data: { coupon, _token },
+            success: function (response) {
+                if (response.status === 'success') {
+                    $("#couponMessage").html(`<p class="text-success">${response.message}</p>`);
+                    if (response.grand_total) {
+                        $("#checkoutTotal").text(response.grand_total);
+                    }
+                } else {
+                    $("#couponMessage").html(`<p class="text-danger">${response.message}</p>`);
+                }
+            },
+            error: function () {
+                $("#couponMessage").html(`<p class="text-danger">Something went wrong</p>`);
+            },
+            complete: function () {
+                // Restore button, hide loader
+                $("#applyCouponBtn").show();
+                $("#applyCouponLoader").addClass("d-none");
+            }
+        });
+    });
+});
+</script>
+
+
 
 @endsection
