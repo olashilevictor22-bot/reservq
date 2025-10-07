@@ -33,7 +33,7 @@
                 <div class="sign-up-img">
                     <img src="{{asset($setting->frondend_login_page) }}" alt="img">
                     <div class="sign-up-main-two-item-text">
-                        <p>{{ __('translate.you agree to zionbites') }} <a href="{{ route('trems.of.service') }}">{{ __('translate.Terms of Use') }}</a> & <a href="{{ route('privacy.policy') }}">{{ __('translate.Privacy Policy') }}</a>. {{ __('translate.You do not need to consent as a condition of food, or buying any other goods or services. Message data rates may apply.') }}</p>
+                        <p>{{ __('You agree to Zionbites') }} <a href="{{ route('trems.of.service') }}">{{ __('translate.Terms of Use') }}</a> & <a href="{{ route('privacy.policy') }}">{{ __('translate.Privacy Policy') }}</a>. {{ __('translate.You do not need to consent as a condition of food, or buying any other goods or services. Message data rates may apply.') }}</p>
 
                     </div>
                 </div>

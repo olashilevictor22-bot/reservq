@@ -238,11 +238,10 @@
 
                             </div>
                         </div>
-                        <div class="tab-pane fade" id="pills-contact" role="tabpanel"
-                            aria-labelledby="pills-contact-tab">
-<div class="popular">
-    <div class="row gap-30">
-                                @forelse ($products as $product2)
+                        <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
+                            <div class="popular">
+                                <div class="row gap-30">
+                                    @forelse ($products as $product2)
                                     <div class="col-lg-6 col-xl-6 col-xxl-4">
                                         <div class="popular-item-box row-card">
                                             <div class="popular-item-box-img">
@@ -282,7 +281,7 @@
                                                     </div>
 
                                                     <div class="popular-inner-item-btn">
-                                                        <a type="button" data-bs-toggle="modal"
+                                                        <a type="button"  data-bs-toggle="modal"
                                                             data-bs-target="#exampleModal{{ $product['id'] }}" class="main-btn-five">
                                                             <span>
                                                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -325,8 +324,7 @@
                                     </div>
                                 @endforelse
                             </div>
-</div>
-
+                        </div>
 
                         </div>
 
