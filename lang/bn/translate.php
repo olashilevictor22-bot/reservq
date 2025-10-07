@@ -1,7 +1,7 @@
 <?php
  return array (
   'Invoice' => 'চালান',
-  'You agree to ReservQ' => 'আপনি ReservQ এ সম্মত হন',
+  'you agree to zionbites the reservQ' => 'আপনি ReservQ এ সম্মত হন',
   'Terms of Use' => 'ব্যবহারের শর্তাবলী',
   'Privacy Policy' => 'গোপনীয়তা নীতি',
   'You do not need to consent as a condition of food, or buying any other goods or services. Message data rates may apply.' => 'খাদ্য, বা অন্য কোনও পণ্য বা সেবা কেনার শর্ত হিসেবে আপনার অনুমতি প্রয়োজন নেই। ম্যাসেজ ডেটা রেট প্রয়োজন হতে পারে।',

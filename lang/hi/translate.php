@@ -1,7 +1,7 @@
 <?php
  return array (
     'Invoice' => 'चालान',
-    'You agree to ReservQ' => 'आप ReservQ से सहमत हैं',
+    'you agree to zionbites the reservQ' => 'आप ReservQ से सहमत हैं',
     'Terms of Use' => 'उपयोग की शर्तें',
     'Privacy Policy' => 'गोपनीयता नीति',
     'You do not need to consent as a condition of food, or buying any other goods or services. Message data rates may apply.' => 'आपको भोजन के रूप में, या किसी अन्य माल या सेवाओं को खरीदने के रूप में सहमत होने की आवश्यकता नहीं है। संदेश डेटा दरें लागू हो सकती हैं।',

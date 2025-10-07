@@ -1,7 +1,7 @@
 <?php
  return array (
   'Invoice' => 'Invoice',
-  'You agree to ReservQ' => 'You agree to ReservQ',
+  'you agree to zionbites the reservQ' => 'you agree to zionbites the reservQ',
   'Terms of Use' => 'Terms of Use',
   'Privacy Policy' => 'Privacy Policy',
   'You do not need to consent as a condition of food, or buying any other goods or services. Message data rates may apply.' => 'You don\'t need to consent as a condition of food, or buying any other goods or services. Message data rates may apply.',

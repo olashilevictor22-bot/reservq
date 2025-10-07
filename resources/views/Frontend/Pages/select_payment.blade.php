@@ -853,15 +853,29 @@
 
 
 <script>
+
 "use strict";
 $(document).ready(function () {
+
+    $("#couponField").on("keypress", function (e) {
+        if (e.which === 13) {
+            e.preventDefault();
+            $("#applyCouponBtn").click();
+        }
+    });
+
+    // Handle Apply Coupon button click
     $("#applyCouponBtn").on("click", function (e) {
         e.preventDefault();
 
-        let coupon = $("#couponField").val();
+        let coupon = $("#couponField").val().trim();
         let _token = "{{ csrf_token() }}";
 
-        // Hide button and show loader
+        if (coupon === "") {
+            showCouponMessage("Please enter a coupon code", "danger");
+            return;
+        }
+
         $("#applyCouponBtn").hide();
         $("#applyCouponLoader").removeClass("d-none");
 
@@ -871,27 +885,39 @@ $(document).ready(function () {
             data: { coupon, _token },
             success: function (response) {
                 if (response.status === 'success') {
-                    $("#couponMessage").html(`<p class="text-success">${response.message}</p>`);
+                    showCouponMessage(response.message, "success");
                     if (response.grand_total) {
                         $("#checkoutTotal").text(response.grand_total);
                     }
                 } else {
-                    $("#couponMessage").html(`<p class="text-danger">${response.message}</p>`);
+                    showCouponMessage(response.message, "danger");
                 }
             },
             error: function () {
-                $("#couponMessage").html(`<p class="text-danger">Something went wrong</p>`);
+                showCouponMessage("Something went wrong", "danger");
             },
             complete: function () {
-                // Restore button, hide loader
                 $("#applyCouponBtn").show();
                 $("#applyCouponLoader").addClass("d-none");
             }
         });
     });
+
+    function showCouponMessage(message, type = "success") {
+        const $msg = $("#couponMessage");
+        $msg
+            .html(`<p class="text-${type} mb-0">${message}</p>`)
+            .fadeIn();
+
+        setTimeout(() => {
+            $msg.fadeOut("slow", function () {
+                $msg.empty().show();
+            });
+        }, 5000);
+    }
+
 });
 </script>
-
 
 
 @endsection

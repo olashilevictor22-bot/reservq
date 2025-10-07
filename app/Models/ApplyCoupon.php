@@ -10,6 +10,11 @@ class ApplyCoupon extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'user_id',
+        'copun_id',
+    ];
+
     public function coupon()
     {
         return $this->belongsTo(Coupon::class,'copun_id','id');

@@ -38,7 +38,8 @@ class FAQAboutController extends Controller
             $image_name1 = Str::slug('image1').date('-Y-m-d-h-i-s-').rand(999,9999).'.'.$extention;
             $image_name1 = 'uploads/website-images/'.$image_name1;
             Image::make($request->image1)
-                ->save(public_path().'/'.$image_name1);
+                // ->save(public_path().'/'.$image_name1);
+                ->save(base_path('public_html/'.$image_name1));
 
             if($old_image1){
                 if(File::exists(public_path().'/'.$old_image1))unlink(public_path().'/'.$old_image1);
