@@ -254,6 +254,15 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="col-lg-6 col-md-6 col-12">
+                                            <div class=" sherah-default-bg  sherah-border mg-top-30">
+                                                <div class="sherah-vcard__body">
+                                                    <div class="sherah-vcard__content p-3">
+                                                        <h4 class="sherah-vcard__title">Order Delivery Note : {{$order->tnx_info}}</h4>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                         @endif
                                         @if($order->type == 'pickup')
                                         <div class="col-lg-6 col-md-6 col-12">
@@ -263,6 +272,15 @@
                                                     <div class="sherah-vcard__content">
                                                         <h4 class="sherah-vcard__title">Order PickUp Day : {{$order->delevery_day}}</h4>
                                                         <h4 class="sherah-vcard__title">Order PickUp Time : {{$order->TimeSlt->slot}}</h4>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6 col-12">
+                                            <div class=" sherah-default-bg  sherah-border mg-top-30">
+                                                <div class="sherah-vcard__body">
+                                                    <div class="sherah-vcard__content p-3">
+                                                        <h4 class="sherah-vcard__title">Order Pickup Note : {{$order->tnx_info}}</h4>
                                                     </div>
                                                 </div>
                                             </div>
@@ -277,6 +295,15 @@
                                                         <h4 class="sherah-vcard__title">Booking Day : {{$order->delevery_day}}</h4>
                                                         <h4 class="sherah-vcard__title">Booking Time : {{$order->TimeSlt->slot}}</h4>
                                                         <h4 class="sherah-vcard__title">Total Gest : {{$order->number_of_gest}}</h4>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6 col-12">
+                                            <div class=" sherah-default-bg  sherah-border mg-top-30">
+                                                <div class="sherah-vcard__body">
+                                                    <div class="sherah-vcard__content p-3">
+                                                        <h4 class="sherah-vcard__title">Order Note : {{$order->tnx_info}}</h4>
                                                     </div>
                                                 </div>
                                             </div>

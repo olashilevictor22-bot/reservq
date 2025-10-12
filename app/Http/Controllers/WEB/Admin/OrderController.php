@@ -19,6 +19,8 @@ class OrderController extends Controller
         $setting =  Setting::first();
         $order = Order::with('userName')->orderBy('id','DESC')->get();
 
+        // dd($order );
+
         return view('Admin.pages.order.all_order', compact('order', 'setting'));
     }
 
@@ -44,6 +46,8 @@ class OrderController extends Controller
         $data['setting'] =  Setting::first();
         $data['order'] = Order::find($id);
         $data['OrderItem'] = OrderItem::where('order_id',$id)->get();
+
+        // dd($data);
         return view('Admin.pages.order.order_detils',$data);
     }
 

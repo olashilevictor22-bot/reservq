@@ -182,7 +182,7 @@ Route::group(['middleware' => ['XSS']], function () {
         Route::post('/pay-with-flutterwave', [PaymentController::class, 'paywithFlutterwave'])->name('pay-with-flutterwave');
 
         //..................Paystack Payment........................//
-        Route::post('/paystack-payment', [PaymentController::class, 'paywithPaystack'])->name('pay-with-paystack');
+        Route::get('/paystack-payment', [PaymentController::class, 'paywithPaystack'])->name('pay-with-paystack');
 
         //..................Instamojo Payment........................//
         Route::get('/instamojo-payment', [PaymentController::class, 'paywithInstamojo'])->name('pay-with-instamojo');

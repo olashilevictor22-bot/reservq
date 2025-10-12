@@ -368,7 +368,7 @@ class PaymentController extends Controller
         }
     }
 
-    public function payWithPayStack(Request $request, $slug){
+    public function payWithPayStack(Request $request){
 
         if(env('APP_MODE') == 'DEMO'){
             $notification = trans('translate.This Is Demo Version. You Can Not Change Anything');
@@ -401,22 +401,53 @@ class PaymentController extends Controller
         $err = curl_error($curl);
         curl_close($curl);
         $final_data = json_decode($response);
-        if($final_data->status == true) {
+        if ($final_data->status == true) {
+            try {
+                $foods = session('cart', []);
+                $user = Auth::user();
 
-            $foods = session('cart', []);
-            $user = Auth::User();
-            $cart = Cart::where('user_id',$user->id)->first();
-            $order = $this->createOrder($user,$foods,$cart,'Paystack', 'success', $transaction);
+                if (!$user) {
+                    throw new \Exception('User not authenticated.');
+                }
 
-            $redirect_url = route('user.order.detils', $order->id);
+                $cart = Cart::where('user_id', $user->id)->first();
 
-            $notification = trans('translate.Your order has been placed. Thanks for your order');
-            return response()->json(['status' => 'success' , 'message' => $notification, 'redirect_url' => $redirect_url]);
+                if (!$cart) {
+                    throw new \Exception('Cart not found for user.');
+                }
+
+                $order = $this->createOrder($user, $foods, $cart, 'Paystack', 'success', $transaction);
+
+                if (!$order) {
+                    throw new \Exception('createOrder() returned null or failed.');
+                }
+
+                $redirect_url = route('user.order.detils', $order->id);
+
+                $notification = trans('translate.Your order has been placed. Thanks for your order');
+
+                return response()->json([
+                    'status' => 'success',
+                    'message' => $notification,
+                    'redirect_url' => $redirect_url
+                ]);
+
+            } catch (\Throwable $e) {
+                \Log::error('Paystack order creation failed: '.$e->getMessage(), [
+                    'trace' => $e->getTraceAsString(),
+                ]);
+
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Something went wrong while creating your order. ' . $e->getMessage(),
+                ], 500);
+            }
         }else{
-            $notification = trans('translate.Payment Faild, please try again');
+                $notification = trans('translate.Payment Faild, please try again');
             return response()->json(['status' => 'faild' , 'message' => $notification]);
         }
     }
+
     public function payWithInstamojo(){
 
         if(env('APP_MODE') == 'DEMO'){

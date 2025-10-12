@@ -824,7 +824,7 @@
                 $.ajax({
                     type: "get",
                     data: {reference, tnx_id, _token},
-                    url: "{{ url('pay-with-paystack') }}",
+                    url: "{{ route('pay-with-paystack') }}",
                     success: function(response) {
                         if(response.status == 'success'){
                             toastr.success(response.message);
@@ -853,7 +853,6 @@
 
 
 <script>
-
 "use strict";
 $(document).ready(function () {
 
@@ -918,6 +917,7 @@ $(document).ready(function () {
 
 });
 </script>
+
 
 
 @endsection
