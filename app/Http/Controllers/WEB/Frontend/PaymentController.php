@@ -4,6 +4,8 @@ namespace App\Http\Controllers\WEB\Frontend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 use PayPal\Api\Amount;
 use App\Helpers\MailHelper;
@@ -265,54 +267,140 @@ class PaymentController extends Controller
         }
     }
 
+    // public function paywithFlutterwave(Request $request)
+    // {
+    //     if(env('APP_MODE') == 'DEMO'){
+    //         $notification = trans('translate.This Is Demo Version. You Can Not Change Anything');
+    //         $notification=array('message'=>$notification,'alert-type'=>'error');
+    //         return redirect()->back()->with($notification);
+    //     }
+
+    //     $flutterwave = Flutterwave::first();
+    //     $curl = curl_init();
+    //     $tnx_id = $request->tnx_id;
+    //     $url = "https://api.flutterwave.com/v3/transactions/$tnx_id/verify";
+    //     $token = $flutterwave->secret_key;
+    //     curl_setopt_array($curl, array(
+    //     CURLOPT_URL => $url,
+    //     CURLOPT_RETURNTRANSFER => true,
+    //     CURLOPT_ENCODING => "",
+    //     CURLOPT_MAXREDIRS => 10,
+    //     CURLOPT_TIMEOUT => 0,
+    //     CURLOPT_FOLLOWLOCATION => true,
+    //     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+    //     CURLOPT_CUSTOMREQUEST => "GET",
+    //     CURLOPT_HTTPHEADER => array(
+    //         "Content-Type: application/json",
+    //         "Authorization: Bearer $token"
+    //     ),
+    //     ));
+
+    //     $response = curl_exec($curl);
+    //     curl_close($curl);
+    //     $response = json_decode($response);
+    //     dd($response);
+    //     if($response->status == 'success'){
+
+
+    //         $foods = session('cart', []);
+    //         $user = Auth::User();
+    //         $cart = Cart::where('user_id',$user->id)->first();
+    //         $order = $this->createOrder($user,$foods,$cart,'Flutterwave', 'success', $tnx_id);
+
+    //         $redirect_url = route('user.order.detils', $order->id);
+
+    //         $notification = trans('translate.Your order has been placed. Thanks for your order');
+    //         return response()->json(['status' => 'success' , 'message' => $notification, 'redirect_url' => $redirect_url]);
+    //     }else{
+    //         $notification = trans('translate.Payment Faild, please try again');
+    //         return response()->json(['status' => 'faild' , 'message' => $notification]);
+    //     }
+    // }
+
+
+
     public function paywithFlutterwave(Request $request)
-     {
-        if(env('APP_MODE') == 'DEMO'){
+    {
+        if (env('APP_MODE') == 'DEMO') {
             $notification = trans('translate.This Is Demo Version. You Can Not Change Anything');
-            $notification=array('message'=>$notification,'alert-type'=>'error');
+            $notification = ['message' => $notification, 'alert-type' => 'error'];
             return redirect()->back()->with($notification);
         }
 
-        $flutterwave = Flutterwave::first();
-        $curl = curl_init();
-        $tnx_id = $request->tnx_id;
-        $url = "https://api.flutterwave.com/v3/transactions/$tnx_id/verify";
-        $token = $flutterwave->secret_key;
-        curl_setopt_array($curl, array(
-        CURLOPT_URL => $url,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => "",
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 0,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => "GET",
-        CURLOPT_HTTPHEADER => array(
-            "Content-Type: application/json",
-            "Authorization: Bearer $token"
-        ),
-        ));
+        try {
+            $flutterwave = Flutterwave::first();
+            $tnx_id = $request->tnx_id;
 
-        $response = curl_exec($curl);
-        curl_close($curl);
-        $response = json_decode($response);
-        if($response->status == 'success'){
+            if (!$tnx_id) {
+                return response()->json(['status' => 'error', 'message' => 'Missing transaction ID from Flutterwave callback.',
+                ], 400);
+            }
 
+            $response = Http::withToken($flutterwave->secret_key)
+                ->acceptJson()->get("https://api.flutterwave.com/v3/transactions/{$tnx_id}/verify");
+
+            // Test for no-ssl on local
+            // $response = Http::withOptions(['verify' => false])
+            //     ->withToken($flutterwave->secret_key)->acceptJson()
+            //     ->get("https://api.flutterwave.com/v3/transactions/{$tnx_id}/verify");
+
+            // Log the raw response for debugging
+            Log::info('Flutterwave Verify Response', ['status' => $response->status(),
+             'body' => $response->body(),
+            ]);
+
+            // If Flutterwave returned an error
+            if ($response->failed()) {
+                return response()->json(['status' => 'error', 'message' => 'Failed to verify transaction with Flutterwave.', 'details' => $response->json(),
+                ], $response->status());
+            }
+
+            $data = $response->json();
+
+            // Ensure valid structure
+            if (!isset($data['status']) || $data['status'] !== 'success') {
+                return response()->json([ 'status' => 'error', 'message' => 'Payment verification failed or returned invalid data.', 'details' => $data,
+                ], 400);
+            }
+
+            //  Optional: Validate the payment was actually successful
+            if (($data['data']['status'] ?? '') !== 'successful') {
+                return response()->json(['status' => 'error', 'message' => 'Payment not completed successfully.',
+                ], 400);
+            }
 
             $foods = session('cart', []);
-            $user = Auth::User();
-            $cart = Cart::where('user_id',$user->id)->first();
-            $order = $this->createOrder($user,$foods,$cart,'Flutterwave', 'success', $tnx_id);
+            $user = Auth::user();
+            $cart = Cart::where('user_id', $user->id)->first();
+
+            if (!$user || !$cart) {
+                return response()->json(['status' => 'error', 'message' => 'User or cart not found. Please try again.',
+                ], 404);
+            }
+
+            $order = $this->createOrder($user, $foods, $cart, 'Flutterwave', 'success', $tnx_id);
+            if (!$order) {
+                return response()->json(['status' => 'error','message' => 'Failed to create order.',
+                ], 500);
+            }
 
             $redirect_url = route('user.order.detils', $order->id);
-
             $notification = trans('translate.Your order has been placed. Thanks for your order');
-            return response()->json(['status' => 'success' , 'message' => $notification, 'redirect_url' => $redirect_url]);
-        }else{
-            $notification = trans('translate.Payment Faild, please try again');
-            return response()->json(['status' => 'faild' , 'message' => $notification]);
+            return response()->json(['status' => 'success', 'message' => $notification, 'redirect_url' => $redirect_url,]);
+
+        } catch (\Throwable $e) {
+            Log::error('Flutterwave Payment Error: '.$e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Something went wrong while processing payment.',
+                'error' => $e->getMessage(),
+            ], 500);
         }
     }
+
 
     public function payWithMollie(Request $request){
 
