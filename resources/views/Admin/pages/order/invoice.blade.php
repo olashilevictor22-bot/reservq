@@ -148,26 +148,26 @@
                                     <td class="left">
                                         <strong>Subtotal</strong>
                                     </td>
-                                    <td class="right">$8.497,00</td>
+                                    <td class="right">&#x20A6; 8.497,00</td>
                                 </tr>
                                 <tr>
                                     <td class="left">
                                         <strong>Discount (20%)</strong>
                                     </td>
-                                    <td class="right">$1,699,40</td>
+                                    <td class="right">&#x20A6; 1,699,40</td>
                                 </tr>
                                 <tr>
                                     <td class="left">
                                         <strong>VAT (10%)</strong>
                                     </td>
-                                    <td class="right">$679,76</td>
+                                    <td class="right">&#x20A6; 679,76</td>
                                 </tr>
                                 <tr>
                                     <td class="left">
                                         <strong>Total</strong>
                                     </td>
                                     <td class="right">
-                                        <strong>$7.477,36</strong>
+                                        <strong>&#x20A6; 7.477,36</strong>
                                     </td>
                                 </tr>
                             </tbody>

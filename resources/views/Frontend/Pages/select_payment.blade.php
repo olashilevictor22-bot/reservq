@@ -148,7 +148,7 @@
                             </div>
                             @endif
 
-                            @if ($paystack->mollie_status == 1)
+                           {{-- @if ($paystack->mollie_status == 1)
                                 <div class="col-lg-6 shopping-payment-btn-mt15px">
                                     <div class="shopping-payment-btn">
 
@@ -173,9 +173,9 @@
                                     </div>
 
                                 </div>
-                            @endif
+                            @endif --}}
 
-                            @if ($instamojo->status == 1)
+                           {{--  @if ($instamojo->status == 1)
                                 <div class="col-lg-6 shopping-payment-btn-mt15px">
                                     <div class="shopping-payment-btn">
                                         <a href="{{ route('pay-with-instamojo') }}">
@@ -199,7 +199,7 @@
                                     </div>
 
                                 </div>
-                            @endif
+                            @endif --}}
 
                             {{-- @if ($stripe->status )
                                 <div class="col-lg-6 shopping-payment-btn-mt15px">
@@ -440,33 +440,44 @@
                                 </div>
                                 <div id="couponMessage"></div>
 
-                                <div class="apply-coupon-box">
-                                    <div class="shopping-cart-list">
-                                        <div class="shopping-cart-list-text">
-                                            <h4>{{ __('translate.Sub Total') }}</h4>
-                                            <a href="javascript:;">{{ $setting->currency_icon }}{{$cart_data->total }}</a>
+                                    <div class="apply-coupon-box">
+                                        <div class="shopping-cart-list">
+                                            <div class="shopping-cart-list-text">
+                                                <h4>{{ __('translate.Sub Total') }}</h4>
+                                                <a id="checkoutSubtotal" href="javascript:;">
+                                                    {{ $setting->currency_icon }}{{ $cart_data->total }}
+                                                </a>
+                                            </div>
+                                            <div class="shopping-cart-list-text">
+                                                <h4>{{ __('translate.Discount') }}</h4>
+                                                <a id="checkoutDiscount" href="javascript:;">
+                                                    -{{ $setting->currency_icon }}{{ $cart_data->discount_amount }}
+                                                </a>
+                                            </div>
+                                            <div class="shopping-cart-list-text">
+                                                <h4>{{ __('translate.Delivery Charge') }}</h4>
+                                                <a id="checkoutShipping" href="javascript:;">
+                                                    +{{ $setting->currency_icon }}{{ $cart_data->delevery_charge }}
+                                                </a>
+                                            </div>
+                                            <div class="shopping-cart-list-text">
+                                                <h4>{{ __('translate.Vat') }}</h4>
+                                                <a id="checkoutVat" href="javascript:;">
+                                                    +{{ $setting->currency_icon }}{{ $cart_data->vat_charge }}
+                                                </a>
+                                            </div>
                                         </div>
-                                        <div class="shopping-cart-list-text">
-                                            <h4>{{ __('translate.Discount') }}</h4>
-                                            <a href="javascript:;">-{{ $setting->currency_icon }}{{$cart_data->discount_amount }}</a>
-                                        </div>
-                                        <div class="shopping-cart-list-text">
-                                            <h4>{{ __('translate.Delivery Charge') }}</h4>
-                                            <a href="javascript:;">+{{ $setting->currency_icon }}{{$cart_data->delevery_charge }}</a>
-                                        </div>
-                                        <div class="shopping-cart-list-text">
-                                            <h4>{{ __('translate.Vat') }}</h4>
-                                            <a href="javascript:;">+{{ $setting->currency_icon }}{{$cart_data->vat_charge }}</a>
-                                        </div>
-                                    </div>
-                                    <div class="shopping-cart-list shopping-cart-list-btm ">
-                                        <div class="shopping-cart-list-text">
-                                            <h4>{{ __('translate.Grand Total') }}</h4>
-                                            <a href="javascript:;">{{ $setting->currency_icon }}{{$cart_data->grand_total }}</a>
+
+                                        <div class="shopping-cart-list shopping-cart-list-btm">
+                                            <div class="shopping-cart-list-text">
+                                                <h4>{{ __('translate.Grand Total') }}</h4>
+                                                <a id="checkoutTotal" href="javascript:;">
+                                                    {{ $setting->currency_icon }}{{ $cart_data->grand_total }}
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
 
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -477,7 +488,7 @@
     </section>
     <!-- Shopping Cart end  -->
 
-    @if ($stripe->status )
+    {{--@if ($stripe->status )
     <!-- Modal -->
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -539,7 +550,7 @@
         </div>
         </div>
     </div>
-    @endif
+    @endif --}}
 
     <!-- Modal -->
     <div class="modal fade" id="bankPayment" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -853,69 +864,66 @@
 
 
 <script>
-"use strict";
-$(document).ready(function () {
-
-    $("#couponField").on("keypress", function (e) {
-        if (e.which === 13) {
-            e.preventDefault();
-            $("#applyCouponBtn").click();
-        }
-    });
-
-    // Handle Apply Coupon button click
-    $("#applyCouponBtn").on("click", function (e) {
-        e.preventDefault();
-
-        let coupon = $("#couponField").val().trim();
-        let _token = "{{ csrf_token() }}";
-
-        if (coupon === "") {
-            showCouponMessage("Please enter a coupon code", "danger");
-            return;
-        }
-
-        $("#applyCouponBtn").hide();
-        $("#applyCouponLoader").removeClass("d-none");
-
-        $.ajax({
-            url: "{{ route('apply.coupon') }}",
-            method: "POST",
-            data: { coupon, _token },
-            success: function (response) {
-                if (response.status === 'success') {
-                    showCouponMessage(response.message, "success");
-                    if (response.grand_total) {
-                        $("#checkoutTotal").text(response.grand_total);
-                    }
-                } else {
-                    showCouponMessage(response.message, "danger");
-                }
-            },
-            error: function () {
-                showCouponMessage("Something went wrong", "danger");
-            },
-            complete: function () {
-                $("#applyCouponBtn").show();
-                $("#applyCouponLoader").addClass("d-none");
+    "use strict";
+    $(document).ready(function () {
+        $("#couponField").on("keypress", function (e) {
+            if (e.which === 13) {
+                e.preventDefault();
+                $("#applyCouponBtn").click();
             }
         });
+
+        $("#applyCouponBtn").on("click", function (e) {
+            e.preventDefault();
+
+            let coupon = $("#couponField").val().trim();
+            let _token = "{{ csrf_token() }}";
+
+            if (coupon === "") {
+                showCouponMessage("Please enter a coupon code", "danger");
+                return;
+            }
+
+            $("#applyCouponBtn").hide();
+            $("#applyCouponLoader").removeClass("d-none");
+
+            $.ajax({
+                url: "{{ route('apply.coupon') }}",
+                method: "POST",
+                data: { coupon, _token },
+                success: function (response) {
+                    if (response.status === 'success') {
+                        showCouponMessage(response.message, "success");
+                        window.location.reload();
+                    } else {
+                        showCouponMessage(response.message, "danger");
+                    }
+                },
+                error: function () {
+                    showCouponMessage("Something went wrong", "danger");
+                },
+                complete: function () {
+                    $("#applyCouponBtn").show();
+                    $("#applyCouponLoader").addClass("d-none");
+                }
+            });
+        });
+
+        function showCouponMessage(message, type = "success") {
+            const $msg = $("#couponMessage");
+            $msg
+                .html(`<p class="text-${type} mb-0">${message}</p>`)
+                .fadeIn();
+
+            setTimeout(() => {
+                $msg.fadeOut("slow", function () {
+                    $msg.empty().show();
+                });
+            }, 4000);
+        }
+
     });
 
-    function showCouponMessage(message, type = "success") {
-        const $msg = $("#couponMessage");
-        $msg
-            .html(`<p class="text-${type} mb-0">${message}</p>`)
-            .fadeIn();
-
-        setTimeout(() => {
-            $msg.fadeOut("slow", function () {
-                $msg.empty().show();
-            });
-        }, 5000);
-    }
-
-});
 </script>
 
 

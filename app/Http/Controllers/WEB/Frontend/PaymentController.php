@@ -678,7 +678,7 @@ class PaymentController extends Controller
         }
 
         Cart::where('user_id', $user->id)->delete();
-        ApplyCoupon::where('user_id', $user->id)->delete();
+        // ApplyCoupon::where('user_id', $user->id)->delete();
         Session::forget('cart');
 
         return $order;
