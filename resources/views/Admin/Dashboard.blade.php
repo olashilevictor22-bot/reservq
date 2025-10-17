@@ -44,7 +44,7 @@
 												<div class="sherah-progress-card__content">
 													<div class="sherah-progress-card__heading">
 														<span class="sherah-pcolor">Total Sales</span>
-														<h4 class="sherah-progress-card__title"><b class="count-animate">{{ $setting->currency_icon }}{{$totalSales}}</b></h4>
+														<h4 class="sherah-progress-card__title"><b class="count-animate">{{ $setting->currency_icon }}{{ number_format($totalSales, 2)}}</b></h4>
 													</div>
 													<div class="sherah-progress-card__button">
 														<p class="sherah-progress-card__text sherah-color3">

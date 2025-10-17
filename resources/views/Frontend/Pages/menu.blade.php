@@ -165,7 +165,7 @@
                                             <div class="featured-item-text">
                                                 <div class="text-item">
                                                     <div class="left">
-                                                        <h3>{{$setting->currency_icon}}{{$product->price}}</h3>
+                                                        <h3>{{$setting->currency_icon}}{{number_format($product->price)}}</h3>
                                                     </div>
                                                 </div>
 
@@ -277,7 +277,7 @@
 
                                                 <div class="popular-inner-item-btm">
                                                     <div class="text">
-                                                        <h3>{{$setting->currency_icon}}{{$product2->price}}</h3>
+                                                        <h3>{{$setting->currency_icon}}{{number_format($product2->price)}}</h3>
                                                     </div>
 
                                                     <div class="popular-inner-item-btn">

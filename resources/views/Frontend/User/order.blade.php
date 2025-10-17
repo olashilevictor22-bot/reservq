@@ -85,7 +85,7 @@
                                         <tr>
                                             <td><a href="{{route('user.order.detils',$order->id)}}"> #{{$order->id}}</a></td>
                                             <td>{{$order->created_at->format('M d, Y h:i A')}}</td>
-                                            <td>{{ $setting->currency_icon }}{{$order->grand_total}}</td>
+                                            <td>{{ $setting->currency_icon }}{{number_format($order->grand_total, 2 )}}</td>
                                             <td>
                                                 <div class="delete-action ">
                                                     @if($order->order_status == 1)

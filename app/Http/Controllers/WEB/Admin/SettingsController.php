@@ -268,6 +268,7 @@ class SettingsController extends Controller
             return redirect()->back()->with($notification);
         }
     }
+    
     public function generalSetting(Request $request, $id)
     {
 
@@ -293,6 +294,7 @@ class SettingsController extends Controller
                 'currency_name' => $request->currency_name,
                 'currency_icon' => $request->currency_icon,
                 'vat_rate' => $request->vat_rate,
+                'service_charge' => $request->service_charge,
                 'timezone' => $request->timezone,
                 'app_visibility' => $request->app_visibility,
                 'app_name' => $request->app_name,

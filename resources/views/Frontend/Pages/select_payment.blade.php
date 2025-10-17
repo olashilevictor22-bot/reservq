@@ -445,25 +445,25 @@
                                             <div class="shopping-cart-list-text">
                                                 <h4>{{ __('translate.Sub Total') }}</h4>
                                                 <a id="checkoutSubtotal" href="javascript:;">
-                                                    {{ $setting->currency_icon }}{{ $cart_data->total }}
+                                                    {{ $setting->currency_icon }}{{ number_format($cart_data->total, 2) }}
                                                 </a>
                                             </div>
                                             <div class="shopping-cart-list-text">
                                                 <h4>{{ __('translate.Discount') }}</h4>
                                                 <a id="checkoutDiscount" href="javascript:;">
-                                                    -{{ $setting->currency_icon }}{{ $cart_data->discount_amount }}
+                                                    -{{ $setting->currency_icon }}{{ number_format($cart_data->discount_amount, 2) }}
                                                 </a>
                                             </div>
                                             <div class="shopping-cart-list-text">
                                                 <h4>{{ __('translate.Delivery Charge') }}</h4>
                                                 <a id="checkoutShipping" href="javascript:;">
-                                                    +{{ $setting->currency_icon }}{{ $cart_data->delevery_charge }}
+                                                    +{{ $setting->currency_icon }}{{ number_format($cart_data->delevery_charge, 2) }}
                                                 </a>
                                             </div>
                                             <div class="shopping-cart-list-text">
-                                                <h4>{{ __('translate.Vat') }}</h4>
+                                                <h4>{{ __('translate.service Charge') }}</h4>
                                                 <a id="checkoutVat" href="javascript:;">
-                                                    +{{ $setting->currency_icon }}{{ $cart_data->vat_charge }}
+                                                    +{{ $setting->currency_icon }}{{ number_format($setting->service_charge, 2) }}
                                                 </a>
                                             </div>
                                         </div>
@@ -472,7 +472,7 @@
                                             <div class="shopping-cart-list-text">
                                                 <h4>{{ __('translate.Grand Total') }}</h4>
                                                 <a id="checkoutTotal" href="javascript:;">
-                                                    {{ $setting->currency_icon }}{{ $cart_data->grand_total }}
+                                                    {{ $setting->currency_icon }}{{ number_format($cart_data->grand_total, 2) }}
                                                 </a>
                                             </div>
                                         </div>

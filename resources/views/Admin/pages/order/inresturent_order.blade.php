@@ -83,7 +83,7 @@
 														</td>
 														<td class="sherah-table__column-5 sherah-table__data-5">
 															<div class="sherah-table__product-content">
-																<p class="sherah-table__product-desc">{{ $setting->currency_icon }}{{$order->grand_total}}</p>
+																<p class="sherah-table__product-desc">{{ $setting->currency_icon }}{{number_format($order->grand_total, 2)}}</p>
 															</div>
 														</td>
 														@if($order->order_status == 1)

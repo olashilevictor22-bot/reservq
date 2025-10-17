@@ -76,7 +76,7 @@ return array(
     'Laravel\\Tinker\\' => array($vendorDir . '/laravel/tinker/src'),
     'Laravel\\SerializableClosure\\' => array($vendorDir . '/laravel/serializable-closure/src'),
     'Laravel\\Sanctum\\' => array($vendorDir . '/laravel/sanctum/src'),
-    'Intervention\\Image\\' => array($vendorDir . '/intervention/imagecache/src/Intervention/Image', $vendorDir . '/intervention/image/src/Intervention/Image'),
+    'Intervention\\Image\\' => array($vendorDir . '/intervention/image/src/Intervention/Image', $vendorDir . '/intervention/imagecache/src/Intervention/Image'),
     'Illuminate\\Support\\' => array($vendorDir . '/laravel/framework/src/Illuminate/Macroable', $vendorDir . '/laravel/framework/src/Illuminate/Collections', $vendorDir . '/laravel/framework/src/Illuminate/Conditionable'),
     'Illuminate\\' => array($vendorDir . '/laravel/framework/src/Illuminate'),
     'GuzzleHttp\\UriTemplate\\' => array($vendorDir . '/guzzlehttp/uri-template/src'),

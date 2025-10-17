@@ -300,31 +300,31 @@
                                     <div class="shopping-cart-list">
                                         <div class="shopping-cart-list-text">
                                             <h4>{{ __('translate.Sub Total') }}</h4>
-                                            <a href="javascript:;">{{ $setting->currency_icon }}{{$subtotal }}</a>
+                                            <a href="javascript:;">{{ $setting->currency_icon }}{{ number_format($subtotal, 2) }}</a>
                                         </div>
                                         <input type="hidden" name="total" value="{{$subtotal }}">
                                         <div class="shopping-cart-list-text">
                                             <h4>{{ __('translate.Discount') }}</h4>
-                                            <a href="javascript:;">-{{ $setting->currency_icon }}{{0}}</a>
+                                            <a href="javascript:;">-{{ $setting->currency_icon }}{{ number_format($discount, 2) }}</a>
                                         </div>
-                                        <input type="hidden" name="discount_amount" value="0">
+                                        <input type="hidden" name="discount_amount" value="{{ $discount }}">
                                         <div class="shopping-cart-list-text">
                                             <h4>{{ __('translate.Delivery Charge') }}</h4>
-                                            <a href="javascript:;">+{{ $setting->currency_icon }}{{$deleveryCharge}}</a>
+                                            <a href="javascript:;">+{{ $setting->currency_icon }}{{ number_format($deleveryCharge, 2) }}</a>
                                         </div>
 
                                         <div class="shopping-cart-list-text">
-                                            <h4>{{ __('translate.Vat') }}</h4>
-                                            <a href="javascript:;">+{{ $setting->currency_icon }}{{$vatChrg =  $subtotal * ($vatCharge/100)}}</a>
+                                            <h4>{{ __('Service Charge') }}</h4>
+                                            <a href="javascript:;">+{{ $setting->currency_icon }}{{ number_format($service_charge, 2) }}</a>
                                         </div>
-                                        <input type="hidden" name="delevery_charge" value="{{$deleveryCharge }}">
-                                        <input type="hidden" name="vat_charge" value="{{$vatChrg}}">
-                                        <input type="hidden" name="type" value="delivery">
+                                            <input type="hidden" name="delevery_charge" value="{{ $deleveryCharge }}">
+                                            <input type="hidden" name="service_charge" value="{{ $service_charge }}">
+                                            <input type="hidden" name="type" value="delivery">
                                     </div>
                                     <div class="shopping-cart-list shopping-cart-list-btm ">
                                         <div class="shopping-cart-list-text">
                                             <h4>{{ __('translate.Grand Total') }}</h4>
-                                            <a href="javascript:;">{{ $setting->currency_icon }}{{$grand_total = (($subtotal-($subtotal * $discount))+$deleveryCharge+$vatChrg) }}</a>
+                                            <a href="javascript:;">{{ $setting->currency_icon }}{{ number_format($grand_total, 2) }}</a>
                                         </div>
                                         <input type="hidden" name="grand_total" value="{{$grand_total}}">
                                     </div>

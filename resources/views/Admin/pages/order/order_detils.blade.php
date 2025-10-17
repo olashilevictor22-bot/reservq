@@ -123,11 +123,11 @@
                                                     </table>
                                                     <div class="order-totals">
                                                         <ul class="order-totals__list">
-                                                            <li class="order-totals__list--sub"><span>Subtotal</span> <span class="order-totals__amount">{{ $setting->currency_icon }}{{$grandTotal}}</span></li>
-                                                            <li><span>Discount</span> <span class="order-totals__amount">{{ $setting->currency_icon }}{{$order->discount_amount}}</span></li>
-                                                            <li><span>Shipping</span> <span class="order-totals__amount">{{ $setting->currency_icon }}{{$order->delevery_charge}}</span></li>
-                                                            <li><span>Vat Tax</span> <span class="order-totals__amount">{{ $setting->currency_icon }}{{$order->vat_charge}}</span></li>
-                                                            <li class="order-totals__bottom"><span>Total</span> <span class="order-totals__amount">{{ $setting->currency_icon }}{{$order->grand_total}}</span></li>
+                                                            <li class="order-totals__list--sub"><span>Subtotal</span> <span class="order-totals__amount">{{ $setting->currency_icon }}{{number_format($grandTotal, 2)}}</span></li>
+                                                            <li><span>Discount</span> <span class="order-totals__amount">{{ $setting->currency_icon }}{{number_format($order->discount_amount, 2)}}</span></li>
+                                                            <li><span>Shipping</span> <span class="order-totals__amount">{{ $setting->currency_icon }}{{number_format($order->delevery_charge, 2)}}</span></li>
+                                                            <li><span>Service Charge</span> <span class="order-totals__amount">{{ $setting->currency_icon }}{{number_format($order->service_charge, 2 )}}</span></li>
+                                                            <li class="order-totals__bottom"><span>Total</span> <span class="order-totals__amount">{{ $setting->currency_icon }}{{number_format($order->grand_total, 2)}}</span></li>
                                                         </ul>
                                                     </div>
                                                 </div>

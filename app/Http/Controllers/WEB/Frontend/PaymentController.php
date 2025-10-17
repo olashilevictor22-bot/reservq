@@ -645,6 +645,7 @@ class PaymentController extends Controller
 
     public function createOrder($user, $foods,$cart,$payment_method, $payment_status, $tnx_info)
     {
+        $data =  Setting::first();
         $order = new Order();
         $order->user_id = $user->id;
         $order->type = $cart->type;
@@ -654,7 +655,8 @@ class PaymentController extends Controller
         $order->delevery_time_id = $cart->delevery_time_id;
         $order->discount_amount = $cart->discount_amount;
         $order->delevery_charge = $cart->delevery_charge;
-        $order->vat_charge = $cart->vat_charge;
+        // $order->vat_charge = $cart->vat_charge;
+        $order->service_charge = $data->service_charge;
         $order->total = $cart->total;
         $order->grand_total = $cart->grand_total;
         $order->payment_method = $payment_method;

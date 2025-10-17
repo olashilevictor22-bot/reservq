@@ -125,7 +125,7 @@
                                                         {{$item->qty}}
                                                     </td>
                                                     <td>
-                                                        {{ $setting->currency_icon }}{{$item->total}}
+                                                        {{ $setting->currency_icon }}{{number_format($item->total, 2)}}
                                                     </td>
                                                 </tr>
                                                 @php $grandTotal += $item->total @endphp
@@ -140,23 +140,23 @@
                                             <tbody>
                                                 <tr>
                                                     <td>{{ __('translate.Sub Total') }}</td>
-                                                    <td>{{ $setting->currency_icon }}{{ $grandTotal }}</td>
+                                                    <td>{{ $setting->currency_icon }}{{ number_format($grandTotal, 2) }}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>{{ __('translate.Discount') }}</td>
-                                                    <td>{{ $setting->currency_icon }}{{$order->discount_amount}}</td>
+                                                    <td>{{ $setting->currency_icon }}{{number_format($order->discount_amount, 2)}}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>{{ __('translate.Delivery Charge') }} </td>
-                                                    <td>{{ $setting->currency_icon }}{{$order->delevery_charge}}</td>
+                                                    <td>{{ $setting->currency_icon }}{{number_format($order->delevery_charge, 2)}}</td>
                                                 </tr>
                                                 <tr>
-                                                    <td>{{ __('translate.Vat') }}</td>
-                                                    <td>{{ $setting->currency_icon }}{{$order->vat_charge}}</td>
+                                                    <td>{{ __('Service Charge') }}</td>
+                                                    <td>{{ $setting->currency_icon }}{{number_format($order->service_charge, 2)}}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>{{ __('translate.Grand Total') }}</td>
-                                                   <td>{{ $setting->currency_icon }}{{$order->grand_total}}</td>
+                                                   <td>{{ $setting->currency_icon }}{{number_format($order->grand_total, 2)}}</td>
                                                 </tr>
                                             </tbody>
                                         </table>

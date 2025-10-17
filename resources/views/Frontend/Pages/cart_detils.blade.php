@@ -207,7 +207,7 @@
                                                     <span>{{ __('translate.Size') }}:</span>
                                                 @endif
                                                 @foreach ($item['size'] as $size => $price)
-                                                    {{ $size }} (<strong>{{ $setting->currency_icon }}{{ $price }}</strong>)
+                                                    {{ $size }} (<strong>{{ $setting->currency_icon }}{{number_format( $price, 2) }}</strong>)
                                                     @php $total = $total + ($price * $item['qty']) @endphp
                                                 @endforeach
                                             </a>
@@ -234,7 +234,7 @@
                                     <td>
                                         <div class="tabel-text">
                                             @if ($product)
-                                                <h6>{{ $setting->currency_icon }}{{ $item['price'] }}</h6>
+                                                <h6>{{ $setting->currency_icon }}{{ number_format($item['price'], 2) }}</h6>
                                             @endif
 
                                         </div>
@@ -256,7 +256,7 @@
                                     </td>
                                     <td>
                                         <div class="tabel-text">
-                                            <h6>{{ $setting->currency_icon }}{{ $item['total'] }}</h6>
+                                            <h6>{{ $setting->currency_icon }}{{ number_format($item['total'], 2) }}</h6>
                                         </div>
                                     </td>
                                     <td>

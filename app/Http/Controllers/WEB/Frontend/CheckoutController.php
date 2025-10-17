@@ -37,36 +37,57 @@ use Auth;
 
 class CheckoutController extends Controller
 {
-    public function delivery(Request $request){
-        if(Auth::user()){
-            $data['DeleveryAreas'] = DeleveryArea::all();
-            $data['seo_setting'] =  SeoSetting::where('id',12)->first();
-            $data['setting'] =  Setting::first();
-            $data['app'] =  MobileApp::first();
-            $data['section'] =  SectionTitel::first();
-            $data['slots'] = TimeSlot::orderBy('id','asc')->get();
-            $data['branchs'] = Admin::where('status',1)->orderBy('id','asc')->get();
-            $data['countries'] = Country::all();
-            $data['address'] = Addresse::with('GetCountry','GetState','GetCity')->where('user_id',Auth::user()->id)->get();
-            $data['cart'] = $request->session()->get('cart', []);
-            $data['vatCharge'] = $data['setting']->vat_rate;
-            $data['deleveryCharge'] = 0;
-            $check = ApplyCoupon::with('coupon')->where(['user_id' => auth::user()->id])->first();
-            if($check){
-                if($check->coupon->offer_type == '%'){
-                    $data['discount'] = ($check->coupon->discount / 100);
-                }else{
-                    $data['discount'] = $check->coupon->discount;
-                }
-            }else{
-                $data['discount'] = 0;
-            }
-            return view('Frontend.Pages.checkout',$data);
-        }else{
+    public function delivery(Request $request)
+    {
+        if (!Auth::check()) {
             $message = trans('translate.Please login first');
-            $notification = array('message' => $message, 'alert-type' => 'error');
+            $notification = ['message' => $message, 'alert-type' => 'error'];
             return redirect()->route('login')->with($notification);
         }
+
+        $data['DeleveryAreas'] = DeleveryArea::all();
+        $data['seo_setting'] = SeoSetting::find(12);
+        $data['setting'] = Setting::first();
+        $data['app'] = MobileApp::first();
+        $data['section'] = SectionTitel::first();
+        $data['slots'] = TimeSlot::orderBy('id', 'asc')->get();
+        $data['branchs'] = Admin::where('status', 1)->orderBy('id', 'asc')->get();
+        $data['countries'] = Country::all();
+        $data['address'] = Addresse::with('GetCountry', 'GetState', 'GetCity')
+            ->where('user_id', Auth::id())
+            ->get();
+        $data['cart'] = $request->session()->get('cart', []);
+
+        // Core values
+        $data['service_charge'] = (float) $data['setting']->service_charge;
+        $data['deleveryCharge'] = 0;
+
+        $subtotal = 0;
+        foreach ($data['cart'] as $item) {
+            $subtotal += (float) ($item['total'] ?? 0);
+        }
+
+        $check = ApplyCoupon::with('coupon')->where('user_id', Auth::id())->first();
+
+        // if($check){
+        //     if($check->coupon->offer_type == '%'){
+        //         $discount = ($check->coupon->discount / 100);
+        //     }else{
+        //         $discount = $check->coupon->discount;
+        //     }
+        // }else{
+        //     $discount = 0;
+        // }
+        $discount = 0;
+
+        $grand_total = ($subtotal - $discount) + $data['deleveryCharge'] + $data['service_charge'];
+
+        $data['subtotal'] = $subtotal;
+        $data['discount'] = $discount;
+        $data['discountAmount'] = $discount;
+        $data['grand_total'] = $grand_total;
+
+        return view('Frontend.Pages.checkout', $data);
     }
 
     public function pickUp(Request $request){
@@ -333,6 +354,7 @@ class CheckoutController extends Controller
 
     public function checkOut(Request $request){
         $cart_detils = Cart::where(['user_id' => auth::user()->id])->first();
+        $data =  Setting::first();
          $cartData = $request->session()->get('cart', []);
 
         $payment_method = "CashOnDelivery";
@@ -347,7 +369,8 @@ class CheckoutController extends Controller
         $order->delevery_time_id = $cart_detils->delevery_time_id;
         $order->discount_amount = $cart_detils->discount_amount;
         $order->delevery_charge = $cart_detils->delevery_charge;
-        $order->vat_charge = $cart_detils->vat_charge;
+        // $order->vat_charge = $cart_detils->vat_charge;
+        $order->service_charge = $data->service_charge;
         $order->total = $cart_detils->total;
         $order->grand_total = $cart_detils->grand_total;
         $order->payment_method = $payment_method;

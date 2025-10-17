@@ -484,8 +484,8 @@ class ComposerStaticInit9752bc95a1d2fb916fb6b83ac1b29894
         ),
         'Intervention\\Image\\' => 
         array (
-            0 => __DIR__ . '/..' . '/intervention/imagecache/src/Intervention/Image',
-            1 => __DIR__ . '/..' . '/intervention/image/src/Intervention/Image',
+            0 => __DIR__ . '/..' . '/intervention/image/src/Intervention/Image',
+            1 => __DIR__ . '/..' . '/intervention/imagecache/src/Intervention/Image',
         ),
         'Illuminate\\Support\\' => 
         array (

@@ -148,26 +148,32 @@
                                     <td class="left">
                                         <strong>Subtotal</strong>
                                     </td>
-                                    <td class="right">&#x20A6; 8.497,00</td>
+                                    <td class="right">{{ $setting->currency_icon }}{{number_format($subtotal = $item->total, 2)}}</td>
                                 </tr>
                                 <tr>
                                     <td class="left">
-                                        <strong>Discount (20%)</strong>
+                                        <strong>Discount</strong>
                                     </td>
-                                    <td class="right">&#x20A6; 1,699,40</td>
+                                    <td class="right">{{ $setting->currency_icon }}{{number_format( $order->discount_amount, 2)}}</td>
                                 </tr>
                                 <tr>
                                     <td class="left">
-                                        <strong>VAT (10%)</strong>
+                                        <strong>Service Charge</strong>
                                     </td>
-                                    <td class="right">&#x20A6; 679,76</td>
+                                    <td class="right">{{ $setting->currency_icon }}{{number_format( $order->service_charge, 2)}}</td>
+                                </tr>
+                                <tr>
+                                    <td class="left">
+                                        <strong>Delivery Charge</strong>
+                                    </td>
+                                    <td class="right">{{ $setting->currency_icon }}{{number_format( $order->delevery_charge, 2)}}</td>
                                 </tr>
                                 <tr>
                                     <td class="left">
                                         <strong>Total</strong>
                                     </td>
                                     <td class="right">
-                                        <strong>&#x20A6; 7.477,36</strong>
+                                        <strong>{{ $setting->currency_icon }}{{number_format( $order->grand_total, 2)}}</strong>
                                     </td>
                                 </tr>
                             </tbody>

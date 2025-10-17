@@ -288,6 +288,16 @@
 
 																					<div class="col-12">
 																						<div class="sherah__item-form--group mg-top-form-20">
+																							<label class="sherah-wc__form-label">Service Charge</label>
+																							<div class="sherah-input-icon">
+																								<input class="sherah-wc__form-input" type="number" value="{{$setting->service_charge ?? '-'}}" name="service_charge">
+																								<div class="sherah-form-icon sherah-color1"></i></div>
+																							</div>
+																						</div>
+																					</div>
+
+																					<div class="col-12">
+																						<div class="sherah__item-form--group mg-top-form-20">
 																							<label class="sherah-wc__form-label">Dafult App Language *</label>
 																							<div class="sherah-input-icon">
 																								<select name="lang_key">
